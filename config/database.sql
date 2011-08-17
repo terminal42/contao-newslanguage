@@ -25,3 +25,4 @@ CREATE TABLE `tl_news_archive` (
 CREATE TABLE `tl_news` (
   `languageMain` int(10) unsigned NOT NULL default '0',
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+

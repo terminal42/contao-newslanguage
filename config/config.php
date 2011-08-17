@@ -1,8 +1,8 @@
-<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+<?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
 
 /**
  * Contao Open Source CMS
- * Copyright (C) 2005-2011 Leo Feyer
+ * Copyright (C) 2005-2010 Leo Feyer
  *
  * Formerly known as TYPOlight Open Source CMS.
  *
@@ -21,7 +21,7 @@
  * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  Andreas Schempp 2009-2011
+ * @copyright  Andreas Schempp 2011
  * @author     Andreas Schempp <andreas@schempp.ch>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  * @version    $Id$
@@ -29,15 +29,7 @@
 
 
 /**
- * Fields
+ * Hooks
  */
-$GLOBALS['TL_LANG']['tl_news_archive']['master']	= array('Hauptarchiv', 'Wählen Sie das Hauptarchive um Sprachenwechel zu ermöglichen.');
-$GLOBALS['TL_LANG']['tl_news_archive']['language']	= array('Sprache', 'Bitte geben Sie die Sprache im RFC3066-Format ein (z.B. en, en-us oder en-cockney).');
- 
- 
-/**
- * References
- */
-$GLOBALS['TL_LANG']['tl_news_archive']['isMaster']	= 'Dies ist ein Hauptarchiv';
-$GLOBALS['TL_LANG']['tl_news_archive']['isSlave']	= 'Das Hauptachiv ist "%s"';
+$GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('NewsLanguage', 'translateUrlParameters');
 

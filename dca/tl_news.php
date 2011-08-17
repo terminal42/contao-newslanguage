@@ -1,13 +1,15 @@
-<?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
+<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
 
 /**
- * TYPOlight webCMS
- * Copyright (C) 2005 Leo Feyer
+ * Contao Open Source CMS
+ * Copyright (C) 2005-2011 Leo Feyer
+ *
+ * Formerly known as TYPOlight Open Source CMS.
  *
  * This program is free software: you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation, either
- * version 2.1 of the License, or (at your option) any later version.
+ * version 3 of the License, or (at your option) any later version.
  * 
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -16,17 +18,18 @@
  * 
  * You should have received a copy of the GNU Lesser General Public
  * License along with this program. If not, please visit the Free
- * Software Foundation website at http://www.gnu.org/licenses/.
+ * Software Foundation website at <http://www.gnu.org/licenses/>.
  *
  * PHP version 5
- * @copyright  Andreas Schempp 2009
+ * @copyright  Andreas Schempp 2009-2011
  * @author     Andreas Schempp <andreas@schempp.ch>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
+ * @version    $Id$
  */
 
 
 /**
- * Palettes
+ * Config
  */
 $GLOBALS['TL_DCA']['tl_news']['config']['onload_callback'][] = array('tl_news_changelanguage', 'showSelectbox');
 
@@ -46,40 +49,47 @@ $GLOBALS['TL_DCA']['tl_news']['fields']['languageMain'] = array
 
 class tl_news_changelanguage extends Backend 
 {
+
+	/**
+	 * Get records from the master archive
+	 *
+	 * @param	DataContainer
+	 * @return	array
+	 * @link	http://www.contao.org/callbacks.html#options_callback
+	 */
 	public function getMasterArchive(DataContainer $dc)
 	{
-		// Handle "edit all" option
-		if ($this->Input->get('act') == 'editAll')
+		$sameDay = $GLOBALS['TL_LANG']['tl_news']['sameDay'];
+		$otherDay = $GLOBALS['TL_LANG']['tl_news']['otherDay'];
+		
+		$arrItems = array($sameDay => array(), $otherDay => array());
+		$objItems = $this->Database->prepare("SELECT * FROM tl_news WHERE pid=(SELECT tl_news_archive.master FROM tl_news_archive LEFT OUTER JOIN tl_news ON tl_news.pid=tl_news_archive.id WHERE tl_news.id=?) ORDER BY date DESC, time DESC")->execute($dc->id);
+		
+		$dayBegin = strtotime('0:00', $dc->activeRecord->date);
+		
+		while( $objItems->next() )
 		{
-			if (!is_array($GLOBALS['languageMain_IDS']))
+			if (strtotime('0:00', $objItems->date) == $dayBegin)
 			{
-				$ids = $this->Session->get('CURRENT');
-				$GLOBALS['languageMain_IDS'] = $ids['IDS'];
+				$arrItems[$sameDay][$objItems->id] = $objItems->headline . ' (' . $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $objItems->time) . ')';
 			}
-			$this->Input->setGet('id', array_shift($GLOBALS['languageMain_IDS']));
-		}
-		
-		
-		$arrItems = array();
-		$objArchive = $this->Database->prepare("SELECT tl_news_archive.* FROM tl_news_archive LEFT OUTER JOIN tl_news ON tl_news.pid=tl_news_archive.id WHERE tl_news.id=?")->execute($dc->id);
-		
-		if ($objArchive->numRows && $objArchive->master > 0)
-		{
-			$objItems = $this->Database->prepare("SELECT * FROM tl_news WHERE pid=? ORDER BY date DESC, time DESC")->execute($objArchive->master);
-			
-			if ($objItems->numRows)
+			else
 			{
-				while( $objItems->next() )
-				{
-					$arrItems[$objItems->id] = $objItems->headline . ' (' . $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $objItems->time) . ')';
-				}
+				$arrItems[$otherDay][$objItems->id] = $objItems->headline . ' (' . $this->parseDate($GLOBALS['TL_CONFIG']['datimFormat'], $objItems->time) . ')';
 			}
 		}
 		
 		return $arrItems;
 	}
 	
-		
+	
+	/**
+	 * Show the select menu only on slave archives
+	 *
+	 * @param	DataContainer
+	 * @return	void
+	 * @link	http://www.contao.org/callbacks.html#onload_callback
+	 */
 	public function showSelectbox(DataContainer $dc)
 	{
 		if($this->Input->get('act') == "edit")
@@ -99,7 +109,7 @@ class tl_news_changelanguage extends Backend
 		}
 		else if($this->Input->get('act') == "editAll")
 		{
-			$GLOBALS['TL_DCA']['tl_page']['palettes']['regular'] = preg_replace('@([,|;]{1}language)([,|;]{1})@','$1,languageMain$2', $GLOBALS['TL_DCA']['tl_page']['palettes']['regular']);
+			$GLOBALS['TL_DCA']['tl_news']['palettes']['regular'] = preg_replace('@([,|;]{1}language)([,|;]{1})@','$1,languageMain$2', $GLOBALS['TL_DCA']['tl_news']['palettes']['regular']);
 		}
 	}
 }

@@ -2,18 +2,24 @@
 newslanguage
 ==============
 
+Version 2.0.0 stable (2011-08-17)
+---------------------------------
+- Updated for changelanguage 2.0
+- Added grouping items on "same day" and "other days"
+- Removed support for Contao 2.6
+
 Version 1.0.2 stable (2009-11-10)
-------------------------------
+---------------------------------
 - fix a display problem in the backend
 - order the news by the date
 - display the date
 
 
 Version 1.0.1 stable (2009-07-14)
-------------------------------
+---------------------------------
 - add support for TYPOlight 2.7
 
 
 Version 1.0.0 stable (2009-02-21)
-------------------------------
+---------------------------------
 - Initial stable release
