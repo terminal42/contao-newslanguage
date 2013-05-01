@@ -22,12 +22,16 @@
  *
  * PHP version 5
  * @copyright  terminal42 gmbh 2009-2013
- * @author     Andreas Schempp <andreas.schempp@terminal42.ch>
+ * @author     Kamil Kuźmiński <kamil.kuzminski@terminal42.ch>
  * @license    http://opensource.org/licenses/lgpl-3.0.html
  */
 
 
 /**
- * Hooks
+ * Register the classes
  */
-$GLOBALS['TL_HOOKS']['translateUrlParameters'][] = array('NewsLanguage', 'translateUrlParameters');
+ClassLoader::addClasses(array
+(
+	'NewsLanguage' => 'system/modules/newslanguage/NewsLanguage.php',
+));
+

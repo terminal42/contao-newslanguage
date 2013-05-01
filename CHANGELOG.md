@@ -1,6 +1,12 @@
-==============
+
 newslanguage
-==============
+============
+
+
+Version 2.1.0 stable (2013-05-01)
+---------------------------------
+- Added support for Contao 3.x
+- Fixed issue with auto_item parameter
 
 Version 2.0.0 stable (2011-08-25)
 ---------------------------------
