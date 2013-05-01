@@ -49,6 +49,23 @@ $GLOBALS['TL_DCA']['tl_news_archive']['fields']['master'] = array
 );
 
 
+/**
+ * Add a language field (for Contao 3.0+)
+ */
+if (!isset($GLOBALS['TL_DCA']['tl_news_archive']['fields']['language']))
+{
+	$GLOBALS['TL_DCA']['tl_news_archive']['fields']['language'] = array
+	(
+		'label'				=> &$GLOBALS['TL_LANG']['tl_news_archive']['language'],
+		'exclude'			=> true,
+		'search'            => true,
+		'filter'            => true,
+		'inputType'			=> 'text',
+		'eval'				=> array('mandatory'=>true, 'maxlength'=>32, 'tl_class'=>'w50')
+	);
+}
+
+
 class tl_newslanguage extends Backend
 {
 
