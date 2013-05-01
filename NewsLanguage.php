@@ -42,14 +42,20 @@ class NewsLanguage extends Frontend
 	 */
 	public function translateUrlParameters($arrGet, $strLanguage, $arrRootPage)
 	{
+		// Set the item from the auto_item parameter
+		if ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
+		{
+			$this->Input->setGet('items', $this->Input->get('auto_item'));
+		}
+
 		$strItem = $this->Input->get('items');
-		
+
         if ($strItem != '')
         {
         	$objNews = $this->Database->prepare("SELECT tl_news.*, tl_news_archive.master FROM tl_news LEFT OUTER JOIN tl_news_archive ON tl_news.pid=tl_news_archive.id WHERE tl_news.id=? OR tl_news.alias=?")
         							  ->limit(1)
         							  ->execute((int)$strItem, $strItem);
-        	
+
         	// We found a news item!!
         	if ($objNews->numRows)
         	{
@@ -62,7 +68,7 @@ class NewsLanguage extends Frontend
 				}
         	}
         }
-        
+
 		return $arrGet;
 	}
 }
