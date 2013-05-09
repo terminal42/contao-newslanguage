@@ -42,32 +42,35 @@ class NewsLanguage extends Frontend
 	 */
 	public function translateUrlParameters($arrGet, $strLanguage, $arrRootPage)
 	{
-		// Set the item from the auto_item parameter
-		if ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
+		$strFragment = $GLOBALS['TL_CONFIG']['useAutoItem'] ? 'auto_item' : 'items';
+
+		if (!isset($arrGet['url'][$strFragment]))
 		{
-			$this->Input->setGet('items', $this->Input->get('auto_item'));
+			// do nothing
+			return $arrGet;
 		}
 
-		$strItem = $this->Input->get('items');
+		// Set the item from the auto_item or items parameter
+		$strItem = $arrGet['url'][$strFragment];
 
-        if ($strItem != '')
-        {
-        	$objNews = $this->Database->prepare("SELECT tl_news.*, tl_news_archive.master FROM tl_news LEFT OUTER JOIN tl_news_archive ON tl_news.pid=tl_news_archive.id WHERE tl_news.id=? OR tl_news.alias=?")
-        							  ->limit(1)
-        							  ->execute((int)$strItem, $strItem);
+		if ($strItem != '')
+		{
+			$objNews = $this->Database->prepare("SELECT tl_news.*, tl_news_archive.master FROM tl_news LEFT OUTER JOIN tl_news_archive ON tl_news.pid=tl_news_archive.id WHERE tl_news.id=? OR tl_news.alias=?")
+									  ->limit(1)
+									  ->execute((int)$strItem, $strItem);
 
-        	// We found a news item!!
-        	if ($objNews->numRows)
-        	{
-        		$id = ($objNews->master > 0) ? $objNews->languageMain : $objNews->id;
-        		$objItem = $this->Database->prepare("SELECT tl_news.id, tl_news.alias FROM tl_news LEFT OUTER JOIN tl_news_archive ON tl_news.pid=tl_news_archive.id WHERE tl_news_archive.language=? AND (tl_news.id=? OR languageMain=?)")->execute($strLanguage, $id, $id);
+			// We found a news item!!
+			if ($objNews->numRows)
+			{
+				$id = ($objNews->master > 0) ? $objNews->languageMain : $objNews->id;
+				$objItem = $this->Database->prepare("SELECT tl_news.id, tl_news.alias FROM tl_news LEFT OUTER JOIN tl_news_archive ON tl_news.pid=tl_news_archive.id WHERE tl_news_archive.language=? AND (tl_news.id=? OR languageMain=?)")->execute($strLanguage, $id, $id);
 
 				if ($objItem->numRows)
 				{
-					$arrGet['url']['items'] = $objItem->alias ? $objItem->alias : $objItem->id;
+					$arrGet['url'][$strFragment] = $objItem->alias ? $objItem->alias : $objItem->id;
 				}
-        	}
-        }
+			}
+		}
 
 		return $arrGet;
 	}
