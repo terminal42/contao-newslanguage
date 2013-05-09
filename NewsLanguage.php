@@ -42,13 +42,16 @@ class NewsLanguage extends Frontend
 	 */
 	public function translateUrlParameters($arrGet, $strLanguage, $arrRootPage)
 	{
-		// Set the item from the auto_item parameter
-		if ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
+		$strFragment = $GLOBALS['TL_CONFIG']['useAutoItem'] ? 'auto_item' : 'items';
+
+		if (!isset($arrGet['url'][$strFragment]))
 		{
-			$this->Input->setGet('items', $this->Input->get('auto_item'));
+			// do nothing
+			return $arrGet;
 		}
 
-		$strItem = $this->Input->get('items');
+		// Set the item from the auto_item or items parameter
+		$strItem = $arrGet['url'][$strFragment];
 
 		if ($strItem != '')
 		{
@@ -64,7 +67,7 @@ class NewsLanguage extends Frontend
 
 				if ($objItem->numRows)
 				{
-					$arrGet['url']['items'] = $objItem->alias ? $objItem->alias : $objItem->id;
+					$arrGet['url'][$strFragment] = $objItem->alias ? $objItem->alias : $objItem->id;
 				}
 			}
 		}
