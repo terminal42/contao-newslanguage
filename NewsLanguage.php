@@ -65,6 +65,12 @@ class NewsLanguage extends Frontend
 				if ($objItem->numRows)
 				{
 					$arrGet['url']['items'] = $objItem->alias ? $objItem->alias : $objItem->id;
+
+					// Set back the auto_item parameter
+					if ($GLOBALS['TL_CONFIG']['useAutoItem'] && isset($_GET['auto_item']))
+					{
+						$arrGet['url']['auto_item'] = $objItem->alias ? $objItem->alias : $objItem->id;
+					}
 				}
         	}
         }
