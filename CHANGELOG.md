@@ -3,6 +3,10 @@ newslanguage
 ============
 
 
+Version 2.1.1 stable (2016-03-08)
+---------------------------------
+- Added support for Contao 4 and Composer
+
 Version 2.1.0 stable (2013-05-01)
 ---------------------------------
 - Added support for Contao 3.x
